@@ -29,13 +29,19 @@ public class Main
 
     public void onEnable()
     {
-        getLogger().info("  ______               _                          ");
-        getLogger().info(" |___  /              | |                         ");
-        getLogger().info("    / / __ _ _ __ ___ | |__   ___  ___  ___   ___ ");
-        getLogger().info("   / / / _` | '_ ` _ \\| '_ \\ / _ \\/ __|/ _ \\ / _ \\");
-        getLogger().info("  / /_| (_| | | | | | | |_) | (_) \\__ \\ (_) |  __/");
-        getLogger().info(" /_____\\__,_|_| |_| |_|_.__/ \\___/|___/\\___/ \\___|");
-
+        getLogger().info("");
+        getLogger().info("  ___");
+        getLogger().info(" | _ )_  _ _ _  __ _ ___ ___ ");
+        getLogger().info(" | _ \\ || | ' \\/ _` / -_) -_)");
+        getLogger().info(" |___/\\_,_|_||_\\__, \\___\\___|");
+        getLogger().info("  ___  _       |___/");
+        getLogger().info(" |   \\(_)____ __| |__ _ _  _ ");
+        getLogger().info(" | |) | (_-< '_ \\ / _` | || |");
+        getLogger().info(" |___/|_/__/ .__/_\\__,_|\\_, |");
+        getLogger().info(" | \\| |__ _|_|__  ___   |__/ ");
+        getLogger().info(" | .` / _` | '  \\/ -_)");
+        getLogger().info(" |_|\\_\\__,_|_|_|_\\___|");
+        getLogger().info("");
         getProxy().getPluginManager().registerCommand(this, new Realname(this));
         getProxy().getPluginManager().registerCommand(this, new Nickname(this));
         getProxy().getPluginManager().registerListener(this, this);
