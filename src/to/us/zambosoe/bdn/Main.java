@@ -43,6 +43,8 @@ public class Main extends Plugin
 
         //Get Config
         Load_Config();
+        //Get Player config
+        Load_Player_Config();
     }
 
     public void Test_For_Config() {
@@ -103,7 +105,6 @@ public class Main extends Plugin
     public void Load_Player_Config(){
         try {
             playerConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "players.yml"));
-
         } catch (IOException e) {
             getLogger().severe("Error: Could not load the player config, creating a new one.");
             Create_Player_Config();
@@ -133,8 +134,7 @@ public class Main extends Plugin
             displayName = playerConfig.getString(player.getUniqueId().toString());
         }
 
-        player.setDisplayName(displayName);
-        return displayName;
+        return Set_Extra(player, displayName);
     }
 
     public String Set_Display_Name(ProxiedPlayer player, String newName){
@@ -144,6 +144,12 @@ public class Main extends Plugin
         playerConfig.set(player.getUniqueId().toString(), newName);
         Save_Player_Config();
 
+        return Set_Extra(player, displayName);
+    }
+
+    public String Set_Extra(ProxiedPlayer player, String newName){
+        String displayName = newName;
+
         if(configuration.getBoolean("Use_Colors")){
             displayName = ChatColor.translateAlternateColorCodes('&', playerConfig.getString(player.getUniqueId().toString()));
         }
@@ -152,10 +158,11 @@ public class Main extends Plugin
             String prefix = configuration.getString("Prefix");
             prefix = ChatColor.translateAlternateColorCodes('&', prefix);
 
-            displayName = prefix + displayName;
+            displayName = prefix + ChatColor.RESET + displayName;
         }
 
         player.setDisplayName(displayName);
+
         return displayName;
     }
 }

@@ -1,5 +1,6 @@
 package to.us.zambosoe.bdn;
 
+import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.event.EventHandler;
 
@@ -18,9 +19,9 @@ public class Listener implements net.md_5.bungee.api.plugin.Listener {
     public void Before_Connection(ServerConnectEvent e)
     {
         main.Load_Config();
+
         getLogger().info(e.getPlayer().getUniqueId().toString() + ": " + main.Get_Display_Name(e.getPlayer()));
     }
-
     private Logger getLogger() {
         return main.getLogger();
     }

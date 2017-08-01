@@ -25,11 +25,13 @@ public class Nickname extends Command
         }else{
             if(strings.length == 1){
                 if(commandSender instanceof ProxiedPlayer){
-                    ((ProxiedPlayer) commandSender).setDisplayName(main.pluginTag + " You set your name to: " + main.Set_Display_Name((ProxiedPlayer) commandSender, strings[0]));
+                    ProxiedPlayer player = (ProxiedPlayer) commandSender;
+                    player.sendMessage(main.pluginTag + "You set your name to: " + main.Set_Display_Name((ProxiedPlayer) commandSender, strings[0]));
                 }else{
                     commandSender.sendMessage( main.pluginTag + "Only a player can set there Nickname.");
                 }
             }else if(strings.length == 2){
+                //Set others name
                 commandSender.sendMessage("Testing..");
             }else{
                 commandSender.sendMessage(main.pluginTag + "/Nickname <newName>/<playerName> [newName]");
