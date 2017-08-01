@@ -1,11 +1,12 @@
 #
 # Default Config.
 #
+Config_Version: 0
 
 #
 # The tag that the plugin will show with commands.
 #
-Plugin_Tag: '&f&l[&9BDN&f&l]'
+Plugin_Tag: '&f&l[&9BDN&f&l]&r '
 
 #
 # Permissions.

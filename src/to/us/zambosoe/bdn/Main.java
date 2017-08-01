@@ -1,31 +1,23 @@
 package to.us.zambosoe.bdn;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
-import net.md_5.bungee.event.EventHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Main extends Plugin implements Listener
+public class Main extends Plugin
 {
     //Global Variables
-    Configuration configuration = null;
-    public File f;
-    public String pluginTag;
-    public List<String> servers = new ArrayList();
-    public int limit;
-    public boolean countColors;
-    public boolean countSpaces;
+    public Configuration configuration = null;
+    public Configuration playerConfig = null;
+    public String pluginTag = null;
 
     //Start Plugin
     public void onEnable()
@@ -43,15 +35,17 @@ public class Main extends Plugin implements Listener
         getLogger().info(" | .` / _` | '  \\/ -_)");
         getLogger().info(" |_|\\_\\__,_|_|_|_\\___|");
         getLogger().info("");
+
+
         getProxy().getPluginManager().registerCommand(this, new Realname(this));
         getProxy().getPluginManager().registerCommand(this, new Nickname(this));
-        getProxy().getPluginManager().registerListener(this, this);
+        getProxy().getPluginManager().registerListener(this, new to.us.zambosoe.bdn.Listener(this));
 
         //Get Config
         Load_Config();
     }
 
-    void Test_For_Config() {
+    public void Test_For_Config() {
         if (!getDataFolder().exists()){
             getDataFolder().mkdir();
             getLogger().info("Created new folder for the plugin.");
@@ -60,50 +54,108 @@ public class Main extends Plugin implements Listener
         File file = new File(getDataFolder(), "config.yml");
 
         if (!file.exists()) {
-            getLogger().info("First time use!");
             try (InputStream in = getResourceAsStream("config.yml")) {
                 Files.copy(in, file.toPath());
                 getLogger().info("Created new config for the plugin.");
             } catch (IOException e) {
-                getLogger().info("Could not create a config, do you have permission?");
+                getLogger().severe("Error: Could not create a config, do you have permission?");
             }
         }
     }
 
     //Load Config
-    void Load_Config(){
+    public void Load_Config(){
         try {
-            Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
+            configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
+            pluginTag = configuration.getString("Plugin_Tag"); //get tag
+            pluginTag = ChatColor.translateAlternateColorCodes('&', pluginTag); //apply color
+
         } catch (IOException e) {
-            getLogger().severe("Error: Could not load the config, did you remove it?");
+            getLogger().severe("Error: Could not load the config, creating a new one.");
+            Test_For_Config();
         }
     }
 
     //Save Config
-    void Save_Config(){
+    public void Save_Config(){
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(getDataFolder(), "config.yml"));
         } catch (IOException e) {
-            getLogger().severe("Error: Could not save the config, did you remove it?");
+            getLogger().severe("Error: Could not save the config, creating a new one.");
+            Test_For_Config();
         }
     }
 
+    //Config for players
+    public void Create_Player_Config(){
+        File file = new File(getDataFolder(), "players.yml");
 
-    //Connection
-    @EventHandler
-    public void Before_Connection(ServerConnectEvent e)
-    {
-        if (this.servers.contains(e.getTarget().getName().toLowerCase())) {
-            if (configuration.get(e.getPlayer().getUniqueId().toString()) != null)
-            {
-                String s = configuration.getString(e.getPlayer().getUniqueId().toString());
-                String co = ChatColor.translateAlternateColorCodes('&', s);
-                e.getPlayer().setDisplayName(co);
-            }
-            else
-            {
-                configuration.set(e.getPlayer().getUniqueId().toString(), e.getPlayer().getDisplayName());
+        if (!file.exists()) {
+            try (InputStream in = getResourceAsStream("players.yml")) {
+                Files.copy(in, file.toPath());
+                getLogger().info("Created new config for the players.");
+            } catch (IOException e) {
+                getLogger().severe("Error: Could not create a config for the players, do you have permission?");
             }
         }
+    }
+
+    public void Load_Player_Config(){
+        try {
+            playerConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "players.yml"));
+
+        } catch (IOException e) {
+            getLogger().severe("Error: Could not load the player config, creating a new one.");
+            Create_Player_Config();
+        }
+    }
+
+    public void Save_Player_Config(){
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(playerConfig, new File(getDataFolder(), "players.yml"));
+
+        } catch (IOException e) {
+            getLogger().severe("Error: Could not save the player config, creating a new one.");
+            Create_Player_Config();
+        }
+    }
+
+    public String Get_Display_Name(ProxiedPlayer player){
+        String displayName = null;
+
+        Load_Player_Config();
+        if(playerConfig.get(player.getUniqueId().toString()) != null){
+            displayName = playerConfig.getString(player.getUniqueId().toString());
+        }else{
+            playerConfig.set(player.getUniqueId().toString(), player.getName());
+            Save_Config();
+
+            displayName = playerConfig.getString(player.getUniqueId().toString());
+        }
+
+        player.setDisplayName(displayName);
+        return displayName;
+    }
+
+    public String Set_Display_Name(ProxiedPlayer player, String newName){
+        String displayName = null;
+
+        Load_Player_Config();
+        playerConfig.set(player.getUniqueId().toString(), newName);
+        Save_Player_Config();
+
+        if(configuration.getBoolean("Use_Colors")){
+            displayName = ChatColor.translateAlternateColorCodes('&', playerConfig.getString(player.getUniqueId().toString()));
+        }
+
+        if(configuration.getBoolean("Use_Prefix")){
+            String prefix = configuration.getString("Prefix");
+            prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+
+            displayName = prefix + displayName;
+        }
+
+        player.setDisplayName(displayName);
+        return displayName;
     }
 }

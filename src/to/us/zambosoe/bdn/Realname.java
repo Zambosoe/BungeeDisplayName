@@ -1,12 +1,9 @@
 package to.us.zambosoe.bdn;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-public class Realname
-        extends Command
+public class Realname extends Command
 {
     Main main;
 
@@ -18,6 +15,7 @@ public class Realname
 
     public void execute(CommandSender commandSender, String[] strings)
     {
-        //Disabled for testing.
+        main.Load_Config();
+        commandSender.sendMessage(main.pluginTag + " Realname command working.");
     }
 }
