@@ -11,6 +11,8 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,25 @@ public class Main extends Plugin implements Listener
 
         //Get Config
         Load_Config();
+    }
+
+    void Test_For_Config() {
+        if (!getDataFolder().exists()){
+            getDataFolder().mkdir();
+            getLogger().info("Created new folder for the plugin.");
+        }
+
+        File file = new File(getDataFolder(), "config.yml");
+
+        if (!file.exists()) {
+            getLogger().info("First time use!");
+            try (InputStream in = getResourceAsStream("config.yml")) {
+                Files.copy(in, file.toPath());
+                getLogger().info("Created new config for the plugin.");
+            } catch (IOException e) {
+                getLogger().info("Could not create a config, do you have permission?");
+            }
+        }
     }
 
     //Load Config
