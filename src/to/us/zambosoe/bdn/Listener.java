@@ -1,11 +1,9 @@
 package to.us.zambosoe.bdn;
 
-import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.logging.Logger;
-
+@SuppressWarnings("ALL")
 public class Listener implements net.md_5.bungee.api.plugin.Listener {
 
     Main main;
@@ -14,15 +12,11 @@ public class Listener implements net.md_5.bungee.api.plugin.Listener {
         this.main = main;
     }
 
-    //Connection
     @EventHandler
-    public void Before_Connection(ServerConnectEvent e)
-    {
-        main.Load_Config();
+    public void On_Connect(ServerConnectedEvent e){
+        main.Load_Config(); //Reload system config
+        main.Load_Player_Config(); //Reload the players
 
-        getLogger().info(e.getPlayer().getUniqueId().toString() + ": " + main.Get_Display_Name(e.getPlayer()));
-    }
-    private Logger getLogger() {
-        return main.getLogger();
+        main.Check_Display_Name(e.getPlayer());
     }
 }

@@ -3,10 +3,8 @@ package to.us.zambosoe.bdn;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.Plugin;
 
-import java.util.logging.Logger;
-
+@SuppressWarnings("ALL")
 public class Nickname extends Command
 {
     Main main;
@@ -26,7 +24,8 @@ public class Nickname extends Command
             if(strings.length == 1){
                 if(commandSender instanceof ProxiedPlayer){
                     ProxiedPlayer player = (ProxiedPlayer) commandSender;
-                    player.sendMessage(main.pluginTag + "You set your name to: " + main.Set_Display_Name((ProxiedPlayer) commandSender, strings[0]));
+                    main.Change_Display_Name(player, strings[0]);
+                    player.sendMessage(main.pluginTag + "You set your name to: " + player.getDisplayName());
                 }else{
                     commandSender.sendMessage( main.pluginTag + "Only a player can set there Nickname.");
                 }

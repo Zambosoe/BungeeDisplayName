@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Set;
 
+@SuppressWarnings("ALL")
 public class Main extends Plugin
 {
     //Global Variables
@@ -41,20 +43,16 @@ public class Main extends Plugin
         getProxy().getPluginManager().registerCommand(this, new Nickname(this));
         getProxy().getPluginManager().registerListener(this, new to.us.zambosoe.bdn.Listener(this));
 
-        //Get Config
         Load_Config();
-        //Get Player config
         Load_Player_Config();
     }
-
+    //*** CONFIG ***
     public void Test_For_Config() {
         if (!getDataFolder().exists()){
             getDataFolder().mkdir();
             getLogger().info("Created new folder for the plugin.");
         }
-
         File file = new File(getDataFolder(), "config.yml");
-
         if (!file.exists()) {
             try (InputStream in = getResourceAsStream("config.yml")) {
                 Files.copy(in, file.toPath());
@@ -64,8 +62,6 @@ public class Main extends Plugin
             }
         }
     }
-
-    //Load Config
     public void Load_Config(){
         try {
             configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "config.yml"));
@@ -77,8 +73,6 @@ public class Main extends Plugin
             Test_For_Config();
         }
     }
-
-    //Save Config
     public void Save_Config(){
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(configuration, new File(getDataFolder(), "config.yml"));
@@ -87,8 +81,6 @@ public class Main extends Plugin
             Test_For_Config();
         }
     }
-
-    //Config for players
     public void Create_Player_Config(){
         File file = new File(getDataFolder(), "players.yml");
 
@@ -101,7 +93,6 @@ public class Main extends Plugin
             }
         }
     }
-
     public void Load_Player_Config(){
         try {
             playerConfig = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(), "players.yml"));
@@ -110,59 +101,50 @@ public class Main extends Plugin
             Create_Player_Config();
         }
     }
-
     public void Save_Player_Config(){
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(playerConfig, new File(getDataFolder(), "players.yml"));
-
         } catch (IOException e) {
             getLogger().severe("Error: Could not save the player config, creating a new one.");
             Create_Player_Config();
         }
     }
+    //*** END CONFIG ***
 
-    public String Get_Display_Name(ProxiedPlayer player){
-        String displayName = null;
-
-        Load_Player_Config();
-        if(playerConfig.get(player.getUniqueId().toString()) != null){
-            displayName = playerConfig.getString(player.getUniqueId().toString());
+    //*** Nickname ***
+    public void Check_Display_Name(ProxiedPlayer p){
+        getLogger().info("Checking for display name..");
+        if(playerConfig.get(p.getUniqueId().toString()) != null){
+            getLogger().info("Display name found.");
         }else{
-            playerConfig.set(player.getUniqueId().toString(), player.getName());
-            Save_Config();
-
-            displayName = playerConfig.getString(player.getUniqueId().toString());
+            getLogger().info("Display name not found.");
+            getLogger().info("Creating a display name.");
+            playerConfig.set(p.getUniqueId().toString(), p.getDisplayName());
+            Save_Player_Config(); //Re
+            Load_Player_Config(); //Load
         }
-
-        return Set_Extra(player, displayName);
+        getLogger().info("Setting the display name.");
+        Set_Display_Name(p);
     }
-
-    public String Set_Display_Name(ProxiedPlayer player, String newName){
+    public void Set_Display_Name(ProxiedPlayer p){
         String displayName = null;
-
-        Load_Player_Config();
-        playerConfig.set(player.getUniqueId().toString(), newName);
-        Save_Player_Config();
-
-        return Set_Extra(player, displayName);
-    }
-
-    public String Set_Extra(ProxiedPlayer player, String newName){
-        String displayName = newName;
-
+        displayName = playerConfig.getString(p.getUniqueId().toString());
         if(configuration.getBoolean("Use_Colors")){
-            displayName = ChatColor.translateAlternateColorCodes('&', playerConfig.getString(player.getUniqueId().toString()));
+            displayName = ChatColor.translateAlternateColorCodes('&', displayName);
         }
-
         if(configuration.getBoolean("Use_Prefix")){
             String prefix = configuration.getString("Prefix");
             prefix = ChatColor.translateAlternateColorCodes('&', prefix);
-
-            displayName = prefix + ChatColor.RESET + displayName;
+            //Add prefix + Reset the color + Add display name + Reset the color.
+            displayName = prefix + ChatColor.RESET + displayName + ChatColor.RESET;
         }
-
-        player.setDisplayName(displayName);
-
-        return displayName;
+        p.setDisplayName(displayName);
+        getLogger().info("Set display name to: " + displayName);
+    }
+    public void Change_Display_Name(ProxiedPlayer p, String s){
+        playerConfig.set(p.getUniqueId().toString(), s);
+        Save_Player_Config(); //Re
+        Load_Player_Config(); //Load
+        Set_Display_Name(p);
     }
 }

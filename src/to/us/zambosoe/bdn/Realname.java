@@ -3,6 +3,7 @@ package to.us.zambosoe.bdn;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
+@SuppressWarnings("ALL")
 public class Realname extends Command
 {
     Main main;
