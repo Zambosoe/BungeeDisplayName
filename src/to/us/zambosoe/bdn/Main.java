@@ -39,8 +39,9 @@ public class Main extends Plugin
         getLogger().info("");
 
 
-        getProxy().getPluginManager().registerCommand(this, new Realname(this));
-        getProxy().getPluginManager().registerCommand(this, new Nickname(this));
+        getProxy().getPluginManager().registerCommand(this, new Change_Display(this));
+        getProxy().getPluginManager().registerCommand(this, new Real_Name(this));
+        getProxy().getPluginManager().registerCommand(this, new Reset_Display(this));
         getProxy().getPluginManager().registerListener(this, new to.us.zambosoe.bdn.Listener(this));
 
         Load_Config();
