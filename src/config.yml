@@ -1,7 +1,8 @@
 #
 # Default Config.
 #
-Config_Version: 0
+#Config_Version: Please do not change.
+Config_Version: 1
 
 #
 # The tag that the plugin will show with commands.
@@ -11,13 +12,22 @@ Plugin_Tag: '&f&l[&9BDN&f&l]&r '
 #
 # Permissions.
 #
-Need_Permissions: True
-Ops_Need_Permissions: False
+#Need permissions: will use a permissions plugin, if you do not have a permission plugin please set this to false.
+Need_Permissions: true
+#
+# bdn.changeName | The /nickname command.
+# bdn.realname | The /realName command.
+# bdn.resetname | The /resetname command.
+# bdn.color | Allows color for the player.
+# MAKE PERMISSIONS FOR SETTING OTHERS
+# bdn.changename.others
 
 #
 # Whitelist Servers.
 #
+#Whitelist_On: If true displaynames will only work on those servers.
 Whitelist_On: false
+#Whitelisted_Servers: Server names from your bungee config.
 Whitelisted_Servers:
   - 'Server'
   - 'Names'
@@ -26,12 +36,20 @@ Whitelisted_Servers:
 #
 # Nicknames.
 #
-Use_Prefix: True
+#Use_Prefix: Use prefix before the display name.
+Use_Prefix: true
+#Prefix: prefix before the display name.
 Prefix: '&9+'
-Length_Limit: True
+#Length_Limit: if true will check the length.
+Length_Limit: true
+#Length: will disallow any nicknames with more then that amount.
 Length: 25
-Use_Colors: True
+#Use_Colors: will convert color codes if set to true.
+Use_Colors: true
+#Allow_Spaces: will allow more then one word in display names.
+Allow_Spaces: true
 
 #
 # Other.
 #
+#Please request any thing here: https://www.spigotmc.org/threads/bungee-display-name.253786/

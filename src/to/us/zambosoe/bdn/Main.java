@@ -113,17 +113,12 @@ public class Main extends Plugin
 
     //*** Nickname ***
     public void Check_Display_Name(ProxiedPlayer p){
-        getLogger().info("Checking for display name..");
-        if(playerConfig.get(p.getUniqueId().toString()) != null){
-            getLogger().info("Display name found.");
-        }else{
-            getLogger().info("Display name not found.");
-            getLogger().info("Creating a display name.");
+        Load_Player_Config(); //Load
+        if(playerConfig.get(p.getUniqueId().toString()) == null){
             playerConfig.set(p.getUniqueId().toString(), p.getDisplayName());
             Save_Player_Config(); //Re
             Load_Player_Config(); //Load
         }
-        getLogger().info("Setting the display name.");
         Set_Display_Name(p);
     }
     public void Set_Display_Name(ProxiedPlayer p){
@@ -139,12 +134,20 @@ public class Main extends Plugin
             displayName = prefix + ChatColor.RESET + displayName + ChatColor.RESET;
         }
         p.setDisplayName(displayName);
-        getLogger().info("Set display name to: " + displayName);
     }
-    public void Change_Display_Name(ProxiedPlayer p, String s){
-        playerConfig.set(p.getUniqueId().toString(), s);
-        Save_Player_Config(); //Re
-        Load_Player_Config(); //Load
-        Set_Display_Name(p);
+    public void Change_Display_Name(ProxiedPlayer p, String s) {
+        if (configuration.getBoolean("Whitelist_On")) {
+            if (configuration.getStringList("Whitelisted_Servers").contains(p.getServer().getInfo().getName())) {
+                playerConfig.set(p.getUniqueId().toString(), s);
+                Save_Player_Config(); //Re
+                Load_Player_Config(); //Load
+                Set_Display_Name(p);
+            }
+        } else {
+            playerConfig.set(p.getUniqueId().toString(), s);
+            Save_Player_Config(); //Re
+            Load_Player_Config(); //Load
+            Set_Display_Name(p);
+        }
     }
 }
