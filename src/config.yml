@@ -17,7 +17,7 @@ Ops_Need_Permissions: False
 #
 # Whitelist Servers.
 #
-Whitelist_On: False
+Whitelist_On: false
 Whitelisted_Servers:
   - 'Server'
   - 'Names'

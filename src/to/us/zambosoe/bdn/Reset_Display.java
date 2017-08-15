@@ -11,27 +11,33 @@ public class Reset_Display extends Command
 
     public Reset_Display(Main main)
     {
-        super("ResetDisplay");
+        super("resetname");
         this.main = main;
     }
 
     public void execute(CommandSender commandSender, String[] strings)
     {
         main.Load_Config();
-        if(commandSender.hasPermission("bdn.ResetDisplay")){
-            if(strings.length == 0){
-                commandSender.sendMessage(main.pluginTag + "/ResetDisplay [playerName]");
-            }else{
-                if(commandSender instanceof ProxiedPlayer){
-                    ProxiedPlayer p = (ProxiedPlayer) commandSender;
-                    main.Change_Display_Name(p, p.getName());
-                    commandSender.sendMessage(main.pluginTag + "Reset display name to: " + p.getDisplayName());
-                }else{
-                    commandSender.sendMessage(main.pluginTag + "Only a player can reset their display name.");
-                }
+
+        ProxiedPlayer sp = null;
+        for(ProxiedPlayer p : main.getProxy().getPlayers()){
+            if(p.getDisplayName().toLowerCase().contains(strings[0].toLowerCase())){
+                sp = p;
             }
+        }
+        if(sp != null){
+            main.Change_Display_Name(sp, sp.getName());
+            commandSender.sendMessage(main.pluginTag + "You reset " + sp.getName() + "'s name to: " + sp.getDisplayName());
+            sp.sendMessage(main.pluginTag + "Your name was reset to: " + sp.getDisplayName());
         }else{
-            commandSender.sendMessage(main.pluginTag + "You don't have permission for this command.");
+            //Change Your name.
+            if(commandSender instanceof ProxiedPlayer){
+                ProxiedPlayer pp = (ProxiedPlayer) commandSender;
+                    main.Change_Display_Name(pp, pp.getName());
+                    pp.sendMessage(main.pluginTag + "Reset your name to: " + pp.getDisplayName());
+            }else{
+                commandSender.sendMessage(main.pluginTag + "Only a player can change their display name.");
+            }
         }
     }
 }

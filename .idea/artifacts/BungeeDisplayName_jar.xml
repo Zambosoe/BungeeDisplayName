@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="BungeeDisplayName:jar">
-    <output-path>$USER_HOME$/Desktop/Testing/Bungee/plugins</output-path>
+    <output-path>$USER_HOME$/Documents/Testing/Bungee/plugins</output-path>
     <root id="archive" name="BungeeDisplayName.jar">
       <element id="module-output" name="BungeeDisplayName" />
     </root>
